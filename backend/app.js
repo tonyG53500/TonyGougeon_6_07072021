@@ -2,12 +2,15 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
-const app = express();
+const userRoutes = require('./routes/users');
+const sauceRoutes = require('./routes/sauces');
 
 mongoose.connect('mongodb+srv://tonyG:tonyg53500@cluster0.wvngz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
     { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Connexion à MongoDB réussie !'))
     .catch(() => console.log('Connexion à MongoDB échouée !'));
+
+const app = express();
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -18,8 +21,7 @@ app.use((req, res, next) => {
 
 app.use(bodyParser.json());
 
-app.post('/api/auth/signup', (req, res) => {
-    res.status(201).json({ message: "Compte créé !"});
-});
+app.use('/api/auth', userRoutes);
+app.use('/api/sauces', sauceRoutes);
 
 module.exports = app;
