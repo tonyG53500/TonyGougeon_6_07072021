@@ -1,6 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const cookieSession = require("cookie-session");
+const helmet = require("helmet");
 const path = require("path");
 
 require("dotenv").config();
@@ -18,6 +20,8 @@ mongoose
 
 const app = express();
 
+app.use(helmet());
+
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader(
@@ -30,6 +34,18 @@ app.use((req, res, next) => {
     );
     next();
 });
+
+app.use(
+    cookieSession({
+        name: "session",
+        secret: "s3CuR3T3",
+        cookie: {
+            secure: true,
+            httpOnly: true,
+            domain: "http://localhost:3000/",
+        },
+    })
+);
 
 app.use(bodyParser.json());
 
